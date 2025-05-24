@@ -19,6 +19,8 @@ typedef struct {
     int hp;
     int PlayerX;
     int PlayerY;
+    int NpcX;
+    int NpcY;
     int ChaveX;
     int ChaveY;
     int PortaX;
@@ -37,35 +39,36 @@ player newPlayer;
 
 int level = 1;
 
-void GenerateMapv(char mapav[13][13], int PlayerX, int PlayerY, int ChaveX, int ChaveY, int PortaX, int PortaY) {
+void GenerateMapv(char mapav[13][13], int PlayerX, int PlayerY, int ChaveX, int ChaveY, int PortaX, int PortaY, int NpcX, int NpcY) {
     int i, j;
         char layout[13][13] = {
             "\t\t\t*********",
-            "\t\t\t* @    	*",
-            "\t\t\t***       	*",
-            "\t\t\t***      	 *",
-            "\t\t\t* D 		*",
-            "\t\t\t***   		 *",
-            "\t\t\t* P   	*",
-            "\t\t\t***  		*",
-            "\t\t\t*       *",
+            "\t\t\t*        *",
+            "\t\t\t***      *",
+            "\t\t\t***      *",
+            "\t\t\t*        *",
+            "\t\t\t***      *",
+            "\t\t\t*        *",
+            "\t\t\t***      *",
+            "\t\t\t*        *",
             "\t\t\t*********",
         };
-		newPlayer.PortaX = 7;
-		newPlayer.PortaY = 7;
+		newPlayer.PortaX = 4;
+		newPlayer.PortaY = 4;
         for (i = 0; i < 13; i++) {
             for (j = 0; j < 13; j++) {
-                mapa[i][j] = layout[i][j];
+                mapav[i][j] = layout[i][j];
                 
             }
         }
-    mapa[PlayerY][PlayerX] = '&';
+    mapav[PlayerY][PlayerX] = '&';
+    mapav[NpcY][NpcX] = 'P';
     if (chavePega == true) {
-        mapa[ChaveY][ChaveX] = ' ';
-        mapa[PortaY][PortaX] = '=';
+        mapav[ChaveY][ChaveX] = ' ';
+        mapav[PortaY][PortaX] = '=';
     } else {
-        mapa[ChaveY][ChaveX] = '@';
-        mapa[PortaY][PortaX] = 'D';
+        mapav[ChaveY][ChaveX] = '@';
+        mapav[PortaY][PortaX] = 'D';
     }
 }
 
@@ -214,8 +217,17 @@ void GenerateMap3(char mapa3[43][43], int PlayerX, int PlayerY, int ChaveX, int 
     }
 }
 
+void PrintMapv(char mapav[13][13]) {
+    int i, j;
+    for (i = 0; i < 13; i++) {
+        for (j = 0; j < 13; j++) {
+            printf("%c", mapav[i][j]);
+        }
+        printf("\n");
+    }
+}
 
-void PrintMap(char mapa[13][13]) {
+void PrintMap1(char mapa[13][13]) {
     int i, j;
     for (i = 0; i < 13; i++) {
         for (j = 0; j < 13; j++) {
@@ -266,6 +278,30 @@ void PlayerSettingsBase() {
 void sair() {
     printf("Saindo do jogo...\n");
     exit(0);
+}
+
+void Interactv() {
+    if (newPlayer.PlayerX == newPlayer.ChaveX && newPlayer.PlayerY == newPlayer.ChaveY && !chavePega) {
+        mapav[newPlayer.ChaveY][newPlayer.ChaveX] = ' ';
+        chavePega = true;
+        printf("Voce pegou a chave '@'!\n");
+        mapav[newPlayer.PortaY][newPlayer.PortaX] = '=';
+    }
+    else if (newPlayer.PlayerX == newPlayer.PortaX && newPlayer.PlayerY == newPlayer.PortaY && chavePega) {
+        printf("Voce abriu a porta e concluiu a fase!\n");
+        exit(0);
+    }else if(mapav[newPlayer.PlayerY][newPlayer.PlayerX] == 'P'){
+    printf("'W' = Mover para cima\n'A' = Mover para a esquerda\n'S' = Mover para baixo\n'D' = Mover para a direita\n'I' = Interagir com objetos (Somente quando estiver embaixo do jogador)\n\n");
+    printf("Voce (Player) tem apenas 3 vidas, seu objetivo eh pegar a '@' (Chave) para abrir a porta identificada como 'D' e concluir a fase.\n");
+    printf("Tome cuidado! Conforme voce avanca no jogo a dificuldade ira aumentar.\n");
+    printf("Esteja atento com inimigos e obstaculos identificados como 'X' (inimigo nivel 1),'V' (inimigo nivel 2) e '#' (Espinhos).\n");
+    printf("Caso sua vida chegue a 0 o jogo fecharas.\n\n");
+    printf("Obs: Aperte o botao ('O') encontrado em alguma fase e descubra algo secreto :)\n");
+
+	}
+    else {
+        printf("Nada para interagir aqui.\n");
+    }
 }
 
 void Interact() {
@@ -338,6 +374,7 @@ void monstmov(int *monsteX, int *monsteY) {
     }
 }
 
+// Função start mapa 3
 void mapa3start(){
     newPlayer.hp = 3;
 
@@ -505,24 +542,18 @@ void mapa3start(){
             monsteY = tempY;
         }
     }
-//        if (mapa3[newPlayer.][])
+
         if (mapa3[newPlayer.PortaY][newPlayer.PortaX] == '=' && newPlayer.PlayerX == newPlayer.PortaX && newPlayer.PlayerY == newPlayer.PortaY) {
             printf("Parabens! Voce abriu a porta e concluiu a fase!\n\n");
             system("cls");
             printf("Depois de uma ardua jornada(ou nao), Voce conseguiu escapar do calabouço!\n ");
-            printf("  ___                __            \n");
-			printf(" / _ \___ ________ _/ / ___ ___  ___\n");
-			printf("/ ___/ _ `/ __/ _ `/ _ / -_/ _ \(_-<\n");
-			printf("/_/  \_,_/_/  \_,_/_.__\__/_//_/___/\n");
-			printf("\n");
-			printf("\n");
             exit(0);
         }
     }
 }
 
      
-
+// Função start mapa 2
 void mapa2start(){
     newPlayer.hp = 3;
 
@@ -646,11 +677,12 @@ void mapa2start(){
             Interact2();
             break;
         }
+        
         if(mapa2) {
         int tempX = monsteX, tempY = monsteY;
-        monstmov(&tempX, &tempY); // Movimento temporário do monstro
+        monstmov(&tempX, &tempY); 
 
-        // Verifica se o movimento do monstro colide com parede ou espinhos
+       
         if (mapa2[tempY][tempX] != '*' && mapa[tempY][tempX] != '#') {
             monsteX = tempX;
             monsteY = tempY;
@@ -682,13 +714,13 @@ void mapa1start() {
     newPlayer.ChaveX = 7;
     newPlayer.ChaveY = 5;
 
-    newPlayer.PortaX = 7;
-    newPlayer.PortaY = 7;
+    newPlayer.PortaX = 4;
+    newPlayer.PortaY = 4;
 
     GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
 
     char command;
-    PrintMap(mapa);
+    PrintMap1(mapa);
     
     while (1) {
         command = getch();
@@ -701,7 +733,7 @@ void mapa1start() {
                 newPlayer.PlayerY--; // Atualização da posição do jogador
                 system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
                 GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
-                PrintMap(mapa);
+                PrintMap1(mapa);
             }
             break;
         case 'S':
@@ -711,7 +743,7 @@ void mapa1start() {
                 newPlayer.PlayerY++; // Atualização da posição do jogador
                 system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
                 GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
-                PrintMap(mapa);
+                PrintMap1(mapa);
             }
             break;
         case 'D':
@@ -721,7 +753,7 @@ void mapa1start() {
                 newPlayer.PlayerX++; // Atualização da posição do jogador
                 system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
                 GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
-                PrintMap(mapa);
+                PrintMap1(mapa);
             }
             break;
         case 'A':
@@ -731,7 +763,7 @@ void mapa1start() {
                 newPlayer.PlayerX--; // Atualização da posição do jogador
                 system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
                 GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
-                PrintMap(mapa);
+                PrintMap1(mapa);
             }
             break;
         case 'I':
@@ -763,22 +795,25 @@ void mapa1start() {
 }
 
 void mapavstart() {
-    // Inicialização da posição do jogador e outros elementos do mapa
-    newPlayer.hp = 3;
     
+    newPlayer.hp = 3;
+
     newPlayer.PlayerX = 7;
     newPlayer.PlayerY = 1;
+
+    newPlayer.NpcX = 9;
+    newPlayer.NpcY = 1;
         
-    newPlayer.ChaveX = 7;
-    newPlayer.ChaveY = 5;
+    newPlayer.ChaveX = 5;
+    newPlayer.ChaveY = 8;
 
     newPlayer.PortaX = 7;
     newPlayer.PortaY = 7;
 
-    GenerateMapv(mapav, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
+    GenerateMapv(mapav, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, newPlayer.NpcX, newPlayer.NpcY);
 
     char command;
-    PrintMap(mapa);
+    PrintMapv(mapav);
     
     while (1) {
         command = getch();
@@ -787,46 +822,46 @@ void mapavstart() {
         case 'W':
         case 'w':
             // Condição para mover para cima
-            if (mapa[newPlayer.PlayerY - 1][newPlayer.PlayerX] != '*' && mapa[newPlayer.PlayerY - 1][newPlayer.PlayerX] != 'D') {
+            if (mapav[newPlayer.PlayerY - 1][newPlayer.PlayerX] != '*' && mapav[newPlayer.PlayerY - 1][newPlayer.PlayerX] != 'D') {
                 newPlayer.PlayerY--; // Atualização da posição do jogador
                 system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
-                GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
-                PrintMap(mapa);
+                GenerateMapv(mapav, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, newPlayer.NpcX, newPlayer.NpcY);
+                PrintMapv(mapav);
             }
             break;
         case 'S':
         case 's':
             // Condição para mover para baixo
-            if (mapa[newPlayer.PlayerY + 1][newPlayer.PlayerX] != '*' && mapa[newPlayer.PlayerY + 1][newPlayer.PlayerX] != 'D') {
+            if (mapav[newPlayer.PlayerY + 1][newPlayer.PlayerX] != '*' && mapav[newPlayer.PlayerY + 1][newPlayer.PlayerX] != 'D') {
                 newPlayer.PlayerY++; // Atualização da posição do jogador
                 system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
-                GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
-                PrintMap(mapa);
+                GenerateMapv(mapav, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, newPlayer.NpcX, newPlayer.NpcY);
+                PrintMapv(mapav);
             }
             break;
         case 'D':
         case 'd':
             // Condição para mover para direita
-            if (mapa[newPlayer.PlayerY][newPlayer.PlayerX + 1] != '*' && mapa[newPlayer.PlayerY][newPlayer.PlayerX + 1] != 'D') {
+            if (mapav[newPlayer.PlayerY][newPlayer.PlayerX + 1] != '*' && mapav[newPlayer.PlayerY][newPlayer.PlayerX + 1] != 'D') {
                 newPlayer.PlayerX++; // Atualização da posição do jogador
                 system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
-                GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
-                PrintMap(mapa);
+                GenerateMapv(mapav, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, newPlayer.NpcX, newPlayer.NpcY);
+                PrintMapv(mapav);
             }
             break;
         case 'A':
         case 'a':
             // Condição para mover para esquerda
-            if (mapa[newPlayer.PlayerY][newPlayer.PlayerX - 1] != '*' && mapa[newPlayer.PlayerY][newPlayer.PlayerX - 1] != 'D') {
+            if (mapav[newPlayer.PlayerY][newPlayer.PlayerX - 1] != '*' && mapav[newPlayer.PlayerY][newPlayer.PlayerX - 1] != 'D') {
                 newPlayer.PlayerX--; // Atualização da posição do jogador
                 system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
-                GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
-                PrintMap(mapa);
+                GenerateMapv(mapav, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, newPlayer.NpcX, newPlayer.NpcY);
+                PrintMapv(mapav);
             }
             break;
         case 'I':
         case 'i':
-            Interact();
+            Interactv();
             break;
         }
         // Verificação de colisão com espinhos
@@ -840,13 +875,13 @@ void mapavstart() {
                 exit(0);
             }
         }
-        if (mapa[newPlayer.PortaY][newPlayer.PortaX] == '=' && newPlayer.PlayerX == newPlayer.PortaX && newPlayer.PlayerY == newPlayer.PortaY) {
+        if (mapav[newPlayer.PortaY][newPlayer.PortaX] == '=' && newPlayer.PlayerX == newPlayer.PortaX && newPlayer.PlayerY == newPlayer.PortaY) {
             printf("Parabens! Voce abriu a porta e concluiu a fase!\n");
             system("cls");
             chavePega = false;
             system("pause");
             system("cls");
-            mapa2start();
+            mapa1start();
             
         }
     }
@@ -856,11 +891,15 @@ int main() {
     int option;
     bool tutorial = false;
     printf("\n\n");
-    printf("\t\t\t88^^Yb 888888 88^^Yb 88   88 888888 88^^Yb 888888  .o. .dP'Y8   8888b. 88   88 88b 88  dP^^b8  888888  dP^Yb  88b 88\n");
-    printf("\t\t\t88__dP 88__   88__dP 88   88 88__   88__dP 88__   ,dP' `Ybo.'   8I  Yb 88   88 88Yb88  dP   `' 88__   dP   Yb 88Yb88\n");
-    printf("\t\t\t88^^^  88^^   88^^Yb Y8   8P 88^^   88^^Yb 88^^        o.`Y8b   8I  dY Y8   8P 88 Y88  Yb  ^88 88^^   Yb   dP 88 Y88\n");
-    printf("\t\t\t88     888888 88  Yb ^YbodP^ 888888 88  Yb 888888      8bodP^   8888Y' `YbodP' 88  Y8  YboodP  888888  YbodP  88  Y8\n");
-    printf("\n\n");
+    printf("\n*  #####  #                    #####   ##        #           #     #            #             ####                                       #    *");
+    printf("\n*    #    #                    #        #        #                 #            #              #  #                                      #    *");
+    printf("\n*    #    # ##    ###          #        #     ## #  # ##    ##    ####    ###   # ##           #  #   ###    ###    ###    ###   # ##   ####  *");
+    printf("\n*    #    ##  #  #   #         ####     #    #  ##  ##  #    #     #     #   #  ##  #          #  #  #   #  #      #   #  #   #  ##  #   #    *");
+    printf("\n*    #    #   #  #####         #        #    #   #  #        #     #     #      #   #          #  #  #####   ###   #      #####  #   #   #    *");
+    printf("\n*    #    #   #  #             #        #    #  ##  #        #     #  #  #   #  #   #          #  #  #          #  #   #  #      #   #   #  # *");
+    printf("\n*    #    #   #   ###          #####   ###    ## #  #       ###     ##    ###   #   #         ####    ###   ####    ###    ###   #   #    ##  *");
+    printf("\n\n");                                                                                 
+                                                        
     do {
         printf("\t1 - Jogar\n\t2 - Tutorial\n\t3 - Sair\n");
         scanf("%d", &option);
@@ -869,7 +908,7 @@ int main() {
         switch (option) {
         case 1:
             PlayerSettingsBase();
-            mapa1start();
+            mapavstart();
             break;
         case 2:
             system("cls");
@@ -877,18 +916,31 @@ int main() {
             if (!tutorial) {
                 tutorial = true;
             }
-            printf("\n\n");
-            printf("\t\t\t88^^Yb 888888 88^^Yb 88   88 888888 88^^Yb 888888  .o. .dP'Y8   8888b. 88   88 88b 88  dP^^b8  888888  dP^Yb  88b 88\n");
-            printf("\t\t\t88__dP 88__   88__dP 88   88 88__   88__dP 88__   ,dP' `Ybo.'   8I  Yb 88   88 88Yb88  dP   `' 88__   dP   Yb 88Yb88\n");
-            printf("\t\t\t88^^^  88^^   88^^Yb Y8   8P 88^^   88^^Yb 88^^        o.`Y8b   8I  dY Y8   8P 88 Y88  Yb  ^88 88^^   Yb   dP 88 Y88\n");
-            printf("\t\t\t88     888888 88  Yb ^YbodP^ 888888 88  Yb 888888      8bodP^   8888Y' `YbodP' 88  Y8  YboodP  888888  YbodP  88  Y8\n");
-            printf("\n\n");
+            printf("\n\n"); 
+            printf("\n*  #####  #                    #####   ##        #           #     #            #             ####                                       #    *");
+            printf("\n*    #    #                    #        #        #                 #            #              #  #                                      #    *");
+            printf("\n*    #    # ##    ###          #        #     ## #  # ##    ##    ####    ###   # ##           #  #   ###    ###    ###    ###   # ##   ####  *");
+            printf("\n*    #    ##  #  #   #         ####     #    #  ##  ##  #    #     #     #   #  ##  #          #  #  #   #  #      #   #  #   #  ##  #   #    *");
+            printf("\n*    #    #   #  #####         #        #    #   #  #        #     #     #      #   #          #  #  #####   ###   #      #####  #   #   #    *");
+            printf("\n*    #    #   #  #             #        #    #  ##  #        #     #  #  #   #  #   #          #  #  #          #  #   #  #      #   #   #  # *");
+            printf("\n*    #    #   #   ###          #####   ###    ## #  #       ###     ##    ###   #   #         ####    ###   ####    ###    ###   #   #    ##  *");                                                                                                                  
+            printf("\n\n"); 
             break;
         case 3:
             sair();
             break;
         default:
             printf("Opção invalida.");
+            system("cls");
+            printf("\n\n"); 
+            printf("\n*  #####  #                    #####   ##        #           #     #            #             ####                                       #    *");
+            printf("\n*    #    #                    #        #        #                 #            #              #  #                                      #    *");
+            printf("\n*    #    # ##    ###          #        #     ## #  # ##    ##    ####    ###   # ##           #  #   ###    ###    ###    ###   # ##   ####  *");
+            printf("\n*    #    ##  #  #   #         ####     #    #  ##  ##  #    #     #     #   #  ##  #          #  #  #   #  #      #   #  #   #  ##  #   #    *");
+            printf("\n*    #    #   #  #####         #        #    #   #  #        #     #     #      #   #          #  #  #####   ###   #      #####  #   #   #    *");
+            printf("\n*    #    #   #  #             #        #    #  ##  #        #     #  #  #   #  #   #          #  #  #          #  #   #  #      #   #   #  # *");
+            printf("\n*    #    #   #   ###          #####   ###    ## #  #       ###     ##    ###   #   #         ####    ###   ####    ###    ###   #   #    ##  *");                                                                                                                  
+            printf("\n\n"); 
         }
     } while (option != 3);
 
