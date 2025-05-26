@@ -12,7 +12,26 @@ char mapa2[23][23];
 char mapa3[43][43];
 
 bool chavePega;
+bool monstroV_ativo = true;
+bool botaoPressionado = false;
 
+// struct chave falsas
+typedef struct {
+    int x;
+    int y;
+} Posicao;
+
+Posicao chavesFalsas[] = {
+    {23, 1},
+    {36, 1},
+    {21, 3},
+    {36, 3},
+    {40, 3}
+};
+
+int numChavesFalsas = sizeof(chavesFalsas) / sizeof(chavesFalsas[0]);
+
+// struct com variaveis pros mapas e player
 typedef struct {
     char nome[16];
     bool vivo;
@@ -38,7 +57,7 @@ int continuar = 1;
 player newPlayer;
 
 int level = 1;
-
+// funções de gerar mapas
 void GenerateMapv(char mapav[13][13], int PlayerX, int PlayerY, int ChaveX, int ChaveY, int PortaX, int PortaY, int NpcX, int NpcY) {
     int i, j;
         char layout[13][13] = {
@@ -77,9 +96,9 @@ void GenerateMap1(char mapa[13][13], int PlayerX, int PlayerY, int ChaveX, int C
         char layout[13][13] = {
             "\t\t\t*********",
             "\t\t\t**     **",
-            "\t\t\t*       *",
-            "\t\t\t*       *",
-            "\t\t\t*  ******",
+            "\t\t\t******  *",
+            "\t\t\t***     *",
+            "\t\t\t**** ****",
             "\t\t\t*  *@   *",
             "\t\t\t*  ***  *",
             "\t\t\t*  *D*  *",
@@ -110,21 +129,21 @@ void GenerateMap2(char mapa2[23][23], int PlayerX, int PlayerY, int ChaveX, int 
         char layout2[23][23] = {
             "\t\t\t********************",
             "\t\t\t**        *****#O#**",
-            "\t\t\t*          ****   **",
-            "\t\t\t*           ***  #**",
+            "\t\t\t*          ****# #**",
+            "\t\t\t******   ******# #**",
             "\t\t\t*            **   **",
-            "\t\t\t*             *#  **",
-            "\t\t\t*                  *",
-            "\t\t\t**                **",
-            "\t\t\t*                  *",
-            "\t\t\t**                **",
+            "\t\t\t*    #####    *## **",
+            "\t\t\t*   #     #   #    *",
+            "\t\t\t**     ##         **",
+            "\t\t\t*  #  #  #    #    *",
+            "\t\t\t**   # ##   #     **",
             "\t\t\t***#            #***",
-            "\t\t\t***###        ###***",
+            "\t\t\t***##############***",
             "\t\t\t***#            #***",
             "\t\t\t**                **",
-            "\t\t\t*                  *",
-            "\t\t\t**      *          *",
-            "\t\t\t** ##  ***         *",
+            "\t\t\t*       ** **  *  **",
+            "\t\t\t**      *  *   *  **",
+            "\t\t\t** ##  ***  *   *  *",
             "\t\t\t**D## *****   @   **",
             "\t\t\t********************",
         };
@@ -136,6 +155,13 @@ void GenerateMap2(char mapa2[23][23], int PlayerX, int PlayerY, int ChaveX, int 
                 mapa2[i][j] = layout2[i][j];
             }
         }
+        if (botaoPressionado) {
+            for ( i = 0; i < 23; i++) {
+                if (mapa2[11][i] == '#') {
+                    mapa2[11][i] = ' ';
+        }
+    }
+}
     
     mapa2[PlayerY][PlayerX] = '&';
     mapa2[monsteY][monsteX] = 'X';
@@ -154,44 +180,44 @@ void GenerateMap3(char mapa3[43][43], int PlayerX, int PlayerY, int ChaveX, int 
     int i,j;
     char layout3[43][43] = {
             "\t*****************************************",
-            "\t**                ***        #@#       **",
-            "\t*                  *         # #        *",
-            "\t*                  *    #      #        *",
-            "\t*      #       #   *                 #  *",
-            "\t*                 ***                   *",
-            "\t*  #          #    *    #               *",
-            "\t*                  *                    *",
-            "\t*        #         *                 #  *",
+            "\t**               *****@        ####@####*",
+            "\t* #         #      *##  #     ####      *",
+            "\t*             #    *@  ###    #####@ ##@*",
+            "\t*    #        #   ***#####              *",
+            "\t******* *******  ************    ********",
+            "\t*  #       #   #  ***    #  #           *",
+            "\t*                  *         #    #     *",
+            "\t*   #     #        * #     #     #   # #*",
             "\t*    #             *                    *",
-            "\t*            #     *    #               *",
-            "\t*                  *                    *",
-            "\t*                 ***             #     *",
+            "\t*        #    #    *    #   #  #     #  *",
+            "\t*    #             *                    *",
+            "\t*   #       #     ***   #       #   #   *",
             "\t*      #           *                    *",
-            "\t*             #    *    #               *",
-            "\t*                  *                    *",
-            "\t*                  *                    *",
-            "\t*                  *       #            *",
-            "\t*   #             ***                   *",
-            "\t*      #     #     *                    *",
-            "\t*                  *                    *",
-            "\t*                  *      #             *",
-            "\t*                  *                  O *",
-            "\t*             #    *          #         *",
-            "\t*   #             ***                   *",
-            "\t*                  *                 #  *",
-            "\t*                  *                    *",
-            "\t*                  *                    *",
-            "\t*             #   ***     #             *",
-            "\t*     #            *                    *",
-            "\t*                  *                    *",
-            "\t**                 *          #        **",
-            "\t***           #    *                  ***",
-            "\t****               *                 ****",
-            "\t***               ***     #            ***",
-            "\t**   #             *                   **",
-            "\t*                  *              #     *",
-            "\t*      #   #       *                    *",
-            "\t**     # D #      ***        #         **",
+            "\t*         #    #   *    #    #          *",
+            "\t*  #   #     #     *            #       *",
+            "\t*******         #  *   #        # *******",
+            "\t*#                 *       #           #*",
+            "\t*   #         #   ***                   *",
+            "\t*******   #     #  *     #      # *******",
+            "\t*    #        #    *                    *",
+            "\t*           #      *      #      #      *",
+            "\t*   #              *  #                 *",
+            "\t*       #     #    *     #     #    #   *",
+            "\t*   #             ***       #           *",
+            "\t*         #        *    #        #     #*",
+            "\t*     #       *    *       #            *",
+            "\t**          #      *   #                *",
+            "\t*  #           #  ***     #    #    #   *",
+            "\t*     #   *****    *  #                 *",
+            "\t*   #      *   #   *        #      #    *",
+            "\t*****     *     #  *     #     #       **",
+            "\t******    **   #   *                  ***",
+            "\t*******   ***#   #***  #    #      # ****",
+            "\t********  ****** *****     #          ***",
+            "\t**   #            ***   #       #      **",
+            "\t*                  *        #     #     *",
+            "\t*      #   #      ***    #           #  *",
+            "\t**     # D #     ***** #       #        **",
             "\t*****************************************",
         };
 
@@ -203,8 +229,10 @@ void GenerateMap3(char mapa3[43][43], int PlayerX, int PlayerY, int ChaveX, int 
 
     mapa3[PlayerY][PlayerX] = '&';
     mapa3[monsteY][monsteX] = 'X';
+    if (monstroV_ativo) {
     mapa3[monste2Y][monste2X] = 'V';
-    mapa3[BotaoX][BotaoY] = 'O';
+}
+    mapa3[BotaoY][BotaoX] = 'O';
     mapa3[Tp1Y][Tp1X] = '<';
     mapa3[Tp2Y][Tp2X] = '>';
     
@@ -216,7 +244,7 @@ void GenerateMap3(char mapa3[43][43], int PlayerX, int PlayerY, int ChaveX, int 
         mapa3[PortaY][PortaX] = 'D';
     }
 }
-
+// funções de printar mapas
 void PrintMapv(char mapav[13][13]) {
     int i, j;
     for (i = 0; i < 13; i++) {
@@ -255,46 +283,64 @@ void PrintMap3(char mapa3[43][43]) {
     }
 }
 
-void PrintTuto() {
-    printf("Tutorial\n");
-    printf("'W' = Mover para cima\n'A' = Mover para a esquerda\n'S' = Mover para baixo\n'D' = Mover para a direita\n'I' = Interagir com objetos (Somente quando estiver embaixo do jogador)\n\n");
-    printf("Voce (Player) tem apenas 3 vidas, seu objetivo eh pegar a '@' (Chave) para abrir a porta identificada como 'D' e concluir a fase.\n");
-    printf("Tome cuidado! Conforme voce avanca no jogo a dificuldade ira aumentar.\n");
-    printf("Esteja atento com inimigos e obstaculos identificados como 'X' (inimigo nivel 1),'V' (inimigo nivel 2) e '#' (Espinhos).\n");
-    printf("Caso sua vida chegue a 0 o jogo fechará.\n\n");
-    printf("Obs: Aperte o botao ('O') encontrado em alguma fase e descubra algo secreto :)\n");
 
-    printf("\nPressione qualquer tecla para voltar ao menu...\n");
-    getch();
-    system("cls");
-}
-
+// função creditos
 void PrintCreditos() {
     system("cls");
     printf("========================================\n");
     printf("               CREDITOS\n");
     printf("========================================\n");
-    printf("Desenvolvido por: Ryan Cavalcanti e Pedro Augusto\n");
-    printf("Versão: 1.0\n");
-    printf("Feito com muita dor de cabeca e muito C! :) \n");
+    printf("Desenvolvido por: Ryan Cavalcanti, Pedro Augusto e Luan Ramiro\n");
+    printf("Feito com muito cafe e muito C! :) \n");
     printf("========================================\n");
     printf("\nPressione qualquer tecla para voltar ao menu...\n");
     getch();
     system("cls");
 }
+// função tela de morte
+void TelaDeMorte() {
+    system("cls");
+    printf("\n\n");
+    printf("  @@@@@                                        @@@@@        \n");
+    printf(" @@@@@@@                                      @@@@@@@       \n");
+    printf(" @@@@@@@           @@@@@@@@@@@@@@@            @@@@@@@       \n");
+    printf("  @@@@@@@@       @@@@@@@@@@@@@@@@@@@        @@@@@@@@        \n");
+    printf("      @@@@@     @@@@@@@@@@@@@@@@@@@@@     @@@@@     \n");
+    printf("        @@@@@  @@@@@@@@@@@@@@@@@@@@@@@  @@@@@       \n");
+    printf("          @@  @@@@@@@@@@@@@@@@@@@@@@@@@  @@     \n");
+    printf("            @@@@@@@    @@@@@@    @@@@@@       \n");
+    printf("            @@@@@@      @@@@      @@@@@        \n");
+    printf("            @@@@@@      @@@@      @@@@@        \n");
+    printf("             @@@@@@    @@@@@@    @@@@@      \n");
+    printf("              @@@@@@@@@@@  @@@@@@@@@@       \n");
+    printf("               @@@@@@@@@@  @@@@@@@@@    \n");
+    printf("         @@     @@@@@@@@@@@@@@@@@   @@\n");
+    printf("         @@@@    @@@@ @ @ @ @ @@@@  @@@@\n");
+    printf("         @@@@@    @@@ @ @ @ @ @@@   @@@@@\n");
+    printf("       @@@@@       @@@@@@@@@@@@@      @@@@@\n");
+    printf("     @@@@           @@@@@@@@@@@          @@@@\n");
+    printf("  @@@@@               @@@@@@@              @@@@@\n");
+    printf(" @@@@@@@                                  @@@@@@@\n");
+    printf("  @@@@@                                    @@@@@\n\n");
+    printf("\nVoce morreu, Suas vidas acabaram. Tente novamente!\n");
+    printf("\nPressione qualquer tecla para voltar ao menu...\n");
+    getch();
+    voltarMenu();
+}
 
 
+// função de inicialização do jogador e chave
 void PlayerSettingsBase() {
     newPlayer.vivo = true;
     newPlayer.hp = 3;
     chavePega = false;
 }
-
+// função sair do jogo
 void sair() {
     printf("Saindo do jogo...\n");
     exit(0);
 }
-
+// função voltar pro menu
 void voltarMenu() {
     printf("\nVoltando para o menu...\n");
     system("pause");
@@ -302,7 +348,7 @@ void voltarMenu() {
     main();
 }
 
-
+// função interagir mapa vila
 void Interactv() {
     if (newPlayer.PlayerX == newPlayer.ChaveX && newPlayer.PlayerY == newPlayer.ChaveY && !chavePega) {
         mapav[newPlayer.ChaveY][newPlayer.ChaveX] = ' ';
@@ -317,15 +363,15 @@ void Interactv() {
     printf("Voce (Player) tem apenas 3 vidas, seu objetivo eh pegar a '@' (Chave) para abrir a porta identificada como 'D' e concluir a fase.\n");
     printf("Tome cuidado! Conforme voce avanca no jogo a dificuldade ira aumentar.\n");
     printf("Esteja atento com inimigos e obstaculos identificados como 'X' (inimigo nivel 1),'V' (inimigo nivel 2) e '#' (Espinhos).\n");
-    printf("Caso sua vida chegue a 0 o jogo fecharas.\n\n");
-    printf("Obs: Aperte o botao ('O') encontrado em alguma fase e descubra algo secreto :)\n");
+    printf("Caso sua vida chegue a 0 voce voltara para o menu.\n\n");
+    printf("Obs: Aperte o botao ('O') encontrado em algumas fases e descubra algo secreto :)\n");
 
 	}
     else {
         printf("Nada para interagir aqui.\n");
     }
 }
-
+// função interagir mapa 1
 void Interact() {
     if (newPlayer.PlayerX == newPlayer.ChaveX && newPlayer.PlayerY == newPlayer.ChaveY && !chavePega) {
         mapa[newPlayer.ChaveY][newPlayer.ChaveX] = ' ';
@@ -343,7 +389,7 @@ void Interact() {
         printf("Nada para interagir aqui.\n");
     }
 }
-
+// função interagir mapa 2
 void Interact2() {
     if (newPlayer.PlayerX == newPlayer.ChaveX && newPlayer.PlayerY == newPlayer.ChaveY && !chavePega) {
         mapa2[newPlayer.ChaveY][newPlayer.ChaveX] = ' ';
@@ -355,14 +401,18 @@ void Interact2() {
         printf("Voce abriu a porta e concluiu a fase!\n");
         exit(0);
     }else if(mapa2[newPlayer.PlayerY][newPlayer.PlayerX] == 'O'){
-    	printf("FULL MOON FULL LIFE\n");
+    	printf("COGITO ERGO SUM\n");
+        botaoPressionado = true;
+    mapa2[newPlayer.PlayerY][newPlayer.PlayerX] = ' ';
+    printf("Os espinhos sumiram!\n");
 	}
     else {
         printf("Nada para interagir aqui.\n");
     }
 }
-
+// função interagir mapa 3
 void Interact3() {
+    int i;
     if (newPlayer.PlayerX == newPlayer.ChaveX && newPlayer.PlayerY == newPlayer.ChaveY && !chavePega) {
         mapa3[newPlayer.ChaveY][newPlayer.ChaveX] = ' ';
         chavePega = true;
@@ -374,12 +424,22 @@ void Interact3() {
         exit(0);
     }else if(mapa3[newPlayer.PlayerY][newPlayer.PlayerX] == 'O'){
     	printf("ITS GOING DOWN NOW\n");
-	}
-    else {
+        if (monstroV_ativo) {
+        monstroV_ativo = false;
+        mapa3[newPlayer.BotaoY][newPlayer.BotaoX] = ' ';
+        printf("Voce desativou o monstro V!\n");
+        }
+	} else {
+        for (i = 0; i < numChavesFalsas; i++) {
+            if (newPlayer.PlayerX == chavesFalsas[i].x && newPlayer.PlayerY == chavesFalsas[i].y) {
+                printf("Essa Chave eh Falsa!!!\n");
+                return;  
+            }
+        }   
         printf("Nada para interagir aqui.\n");
     }
 }
-
+// função de movimento aleatorio do monstro X
 void monstmov(int *monsteX, int *monsteY) {
     int n = 4;
 
@@ -395,15 +455,14 @@ void monstmov(int *monsteX, int *monsteY) {
         (*monsteY)--;
     }
 }
-
+// Funçõa verificar colisão monstro x jogador
 void verificarColisaoComMonstros(int monsteX, int monsteY, int monste2X, int monste2Y) {
     if ((newPlayer.PlayerX == monsteX && newPlayer.PlayerY == monsteY) ||
         (newPlayer.PlayerX == monste2X && newPlayer.PlayerY == monste2Y)) {
         newPlayer.hp--;
         printf("O monstro te acertou! Vidas restantes: %d\n", newPlayer.hp);
         if (newPlayer.hp <= 0) {
-            printf("Fim de jogo! Voce perdeu todas as vidas.\n");
-            voltarMenu();
+            TelaDeMorte();
         }
     }
 }
@@ -412,6 +471,7 @@ void verificarColisaoComMonstros(int monsteX, int monsteY, int monste2X, int mon
 // Função start mapa 3
 void mapa3start(){
     newPlayer.hp = 3;
+    monstroV_ativo = true;
 
     newPlayer.PlayerX = 10;
     newPlayer.PlayerY = 1;
@@ -422,11 +482,11 @@ void mapa3start(){
     newPlayer.PortaX = 10;
     newPlayer.PortaY = 38;
 
-    newPlayer.BotaoX = 22;
-    newPlayer.BotaoY = 39;
+    newPlayer.BotaoX = 23;
+    newPlayer.BotaoY = 38;
     
-    int monsteX = 10;
-    int monsteY = 9;
+    int monsteX = 12;
+    int monsteY = 34;
     
     int monste2X = 22;
     int monste2Y = 10;
@@ -440,7 +500,7 @@ void mapa3start(){
     
     char command;
     PrintMap3(mapa3);
-
+ // Mov Jogador
     while (1) {
         command = getch();
 
@@ -452,18 +512,18 @@ void mapa3start(){
                     
                     if (mapa3[newPlayer.PlayerY][newPlayer.PlayerX] == '#') {
                         newPlayer.hp--;
+                        newPlayer.PlayerY++;
                         printf("Perdeu vida %d vezes.\n", newPlayer.hp);
                         system("pause");
-                        // Verificar se o jogador excedeu o limite de toques nos espinhos
+                    
                         if (newPlayer.hp == 0) {
-                            // Se sim, o jogador morre
-                            printf("Fim de jogo! Você perdeu todas as vidas.\n");
-                            voltarMenu();
+                    
+                            TelaDeMorte();
                         } else {
                             printf("Você tocou nos espinhos, mas ainda tem vida restante.\n");
                         }
                     }
-                    system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                    system("cls");
                     GenerateMap3(mapa3, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, monsteX, monsteY, monste2X, monste2Y, newPlayer.BotaoX, newPlayer.BotaoY,Tp1X,Tp2X,Tp1Y,Tp2Y);
                     PrintMap3(mapa3);
                     verificarColisaoComMonstros(monsteX, monsteY, monste2X, monste2Y);
@@ -476,18 +536,18 @@ void mapa3start(){
                     
                     if (mapa3[newPlayer.PlayerY][newPlayer.PlayerX] == '#') {
                         newPlayer.hp--;
+                        newPlayer.PlayerY--;
                         printf("Perdeu vida %d vezes.\n", newPlayer.hp);
                         system("pause");
-                        // Verificar se o jogador excedeu o limite de toques nos espinhos
+                      
                         if (newPlayer.hp == 0) {
-                            // Se sim, o jogador morre
-                            printf("Fim de jogo! Você perdeu todas as vidas.\n");
-                            voltarMenu();
+                         
+                            TelaDeMorte();
                         } else {
                             printf("Você tocou nos espinhos, mas ainda tem vida restante.\n");
                         }
                     }
-                    system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                    system("cls"); 
                     GenerateMap3(mapa3, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, monsteX, monsteY, monste2X, monste2Y, newPlayer.BotaoX, newPlayer.BotaoY,Tp1X,Tp2X,Tp1Y,Tp2Y);
                     PrintMap3(mapa3);
                     verificarColisaoComMonstros(monsteX, monsteY, monste2X, monste2Y);
@@ -495,23 +555,22 @@ void mapa3start(){
                 break;
             case 'D':
             case 'd':
-                if (mapa3[newPlayer.PlayerY + 1][newPlayer.PlayerX] != '*' && mapa3[newPlayer.PlayerY + 1][newPlayer.PlayerX] != 'D') {
+                if (mapa3[newPlayer.PlayerY][newPlayer.PlayerX + 1] != '*' && mapa3[newPlayer.PlayerY][newPlayer.PlayerX + 1] != 'D') {
                     newPlayer.PlayerX++;
-                    
                     if (mapa3[newPlayer.PlayerY][newPlayer.PlayerX] == '#') {
                         newPlayer.hp--;
+                        newPlayer.PlayerX--;
                         printf("Perdeu vida %d vezes.\n", newPlayer.hp);
                         system("pause");
-                        // Verificar se o jogador excedeu o limite de toques nos espinhos
+                     
                         if (newPlayer.hp == 0) {
-                            // Se sim, o jogador morre
-                            printf("Fim de jogo! Você perdeu todas as vidas.\n");
-                            voltarMenu();
+                    
+                            TelaDeMorte();
                         } else {
                             printf("Você tocou nos espinhos, mas ainda tem vida restante.\n");
                         }
                     }
-                    system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                    system("cls"); 
                     GenerateMap3(mapa3, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, monsteX, monsteY, monste2X, monste2Y, newPlayer.BotaoX, newPlayer.BotaoY,Tp1X,Tp2X,Tp1Y,Tp2Y);
                     PrintMap3(mapa3);
                     verificarColisaoComMonstros(monsteX, monsteY, monste2X, monste2Y);
@@ -521,21 +580,20 @@ void mapa3start(){
             case 'a':
                 if (mapa3[newPlayer.PlayerY][newPlayer.PlayerX - 1] != '*' && mapa3[newPlayer.PlayerY][newPlayer.PlayerX - 1] != 'D') {
                     newPlayer.PlayerX--;
-                    
+
                     if (mapa3[newPlayer.PlayerY][newPlayer.PlayerX] == '#') {
                         newPlayer.hp--;
+                        newPlayer.PlayerX++;
                         printf("Perdeu vida %d vezes.\n", newPlayer.hp);
                         system("pause");
-                        // Verificar se o jogador excedeu o limite de toques nos espinhos
                         if (newPlayer.hp == 0) {
-                            // Se sim, o jogador morre
-                            printf("Fim de jogo! Você perdeu todas as vidas.\n");
-                            voltarMenu();
+                        
+                            TelaDeMorte();
                         } else {
                             printf("Você tocou nos espinhos, mas ainda tem vida restante.\n");
                         }
                     }
-                    system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                    system("cls"); 
                     GenerateMap3(mapa3, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, monsteX, monsteY, monste2X, monste2Y, newPlayer.BotaoX, newPlayer.BotaoY,Tp1X,Tp2X,Tp1Y,Tp2Y);                    
                     PrintMap3(mapa3);
                     verificarColisaoComMonstros(monsteX, monsteY, monste2X, monste2Y);
@@ -550,11 +608,21 @@ void mapa3start(){
                 printf("Cheat ativado: Pulando para a próxima fase!\n");
                 system("pause");
                 system("cls");
+                printf("* ######     ###    ######     ###    ######   #######  ##   ##   ##### *\n");
+                printf("*  ##  ##   ## ##    ##  ##   ## ##    ##  ##   ##   #  ###  ##  ##   ## *\n");
+                printf("*  ##  ##  ##   ##   ##  ##  ##   ##   ##  ##   ##      #### ##  ## *\n");
+                printf("*  #####   ##   ##   #####   ##   ##   #####    ####    #######   ##### *\n");
+                printf("*  ##      #######   ## ##   #######   ##  ##   ##      ## ####       ## *\n");
+                printf("*  ##      ##   ##   ## ##   ##   ##   ##  ##   ##   #  ##  ###  ##   ## *\n");
+                printf("* ####     ##   ##  #### ##  ##   ##  ######   #######  ##   ##   ##### *\n\n");
+                printf("Depois de uma ardua jornada(ou nao), Voce conseguiu escapar do calabouco!\n ");
+                system("pause");
+                system("cls");
                 PrintCreditos();
                 voltarMenu();
         break;
         }
-
+        // Funcionamento do TP
         if (mapa3[newPlayer.PlayerY][newPlayer.PlayerX] == '<') {
             newPlayer.PlayerX = 39;
             newPlayer.PlayerY = 18;
@@ -562,31 +630,31 @@ void mapa3start(){
             newPlayer.PlayerX = 3;
             newPlayer.PlayerY = 18;
         }
-
-        if(mapa3){
-    int movement = rand() %2;
-
+        // Funcioanmento Monstro V
+        if(monstroV_ativo) {
+    int movement = rand() % 2;
     if(movement == 0){
-        if(newPlayer.PlayerX<monste2X){
+        if(newPlayer.PlayerX < monste2X){
             monste2X--;
-        }else{
+        } else {
             monste2X++;
         }
-    }else{
-        if(newPlayer.PlayerY<monste2Y){
+    } else {
+        if(newPlayer.PlayerY < monste2Y){
             monste2Y--;
-    }else{
+        } else {
             monste2Y++;
         }
-    } 
+    }
 }
 
 
 
 
+        // funcionamento monstro X
         if(mapa3){
         int tempX = monsteX, tempY = monsteY;
-        monstmov(&tempX, &tempY); // Movimento temporário do monstro
+        monstmov(&tempX, &tempY);
         
         if (mapa3[tempY][tempX] != '*' && mapa3[tempY][tempX] != '#') {
             monsteX = tempX;
@@ -598,8 +666,16 @@ void mapa3start(){
         if (mapa3[newPlayer.PortaY][newPlayer.PortaX] == '=' && newPlayer.PlayerX == newPlayer.PortaX && newPlayer.PlayerY == newPlayer.PortaY) {
             printf("Parabens! Voce abriu a porta e concluiu a fase!\n\n");
             system("cls");
-            printf("Depois de uma ardua jornada(ou nao), Voce conseguiu escapar do calabouco!\n ");
+            printf("* ######     ###    ######     ###    ######   #######  ##   ##   ##### *\n");
+            printf("*  ##  ##   ## ##    ##  ##   ## ##    ##  ##   ##   #  ###  ##  ##   ## *\n");
+            printf("*  ##  ##  ##   ##   ##  ##  ##   ##   ##  ##   ##      #### ##  ## *\n");
+            printf("*  #####   ##   ##   #####   ##   ##   #####    ####    #######   ##### *\n");
+            printf("*  ##      #######   ## ##   #######   ##  ##   ##      ## ####       ## *\n");
+            printf("*  ##      ##   ##   ## ##   ##   ##   ##  ##   ##   #  ##  ###  ##   ## *\n");
+            printf("* ####     ##   ##  #### ##  ##   ##  ######   #######  ##   ##   ##### *\n\n");
+            printf("Depois de uma ardua jornada, Voce conseguiu recuperar o antigo tesouro do rei!\n ");
             system("pause");
+            system("cls");
             PrintCreditos();
             voltarMenu();
         }
@@ -630,7 +706,7 @@ void mapa2start(){
     
     char command;
     PrintMap2(mapa2);
-
+ // Mov Jogador
     while (1) {
         command = getch();
 
@@ -642,18 +718,18 @@ void mapa2start(){
                 
                 if (mapa2[newPlayer.PlayerY][newPlayer.PlayerX] == '#') {
                     newPlayer.hp--;
+                    newPlayer.PlayerY++;
                     printf("Perdeu vida %d vezes.\n", newPlayer.hp);
                     system("pause");
-                    // Verificar se o jogador excedeu o limite de toques nos espinhos
+              
                     if (newPlayer.hp == 0) {
-                    // Se sim, o jogador morre
-                        printf("Fim de jogo! Você perdeu todas as vidas.\n");
-                        exit(0);
+               
+                        TelaDeMorte();
             } else {
                 printf("Você tocou nos espinhos, mas ainda tem vida restante.\n");
             }
         }
-            system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+            system("cls"); 
             GenerateMap2(mapa2, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY,monsteX,monsteY,newPlayer.BotaoX,newPlayer.BotaoY);
             PrintMap2(mapa2);
             verificarColisaoComMonstros(monsteX, monsteY, -1, -1);
@@ -664,16 +740,15 @@ void mapa2start(){
             if (mapa2[newPlayer.PlayerY + 1][newPlayer.PlayerX] != '*' && mapa2[newPlayer.PlayerY + 1][newPlayer.PlayerX] != 'D'){
                 newPlayer.PlayerY++;
                 
-                
                 if (mapa2[newPlayer.PlayerY][newPlayer.PlayerX] == '#') {
                 newPlayer.hp--;
+                newPlayer.PlayerY--;
                 printf("Perdeu vida %d vezes.\n", newPlayer.hp);
                 system("pause");
                 
                 if (newPlayer.hp == 0) {
                
-                printf("Fim de jogo! Você perdeu todas as vidas.\n");
-                voltarMenu();
+                TelaDeMorte();
             } else {
                 printf("Você tocou nos espinhos, mas ainda tem vida restante.\n");
             }
@@ -692,13 +767,13 @@ void mapa2start(){
 
                 if (mapa2[newPlayer.PlayerY][newPlayer.PlayerX] == '#') {
                 newPlayer.hp--;
+                newPlayer.PlayerX--;
                 printf("Perdeu vida %d vezes.\n", newPlayer.hp);
                 system("pause");
                 
             if (newPlayer.hp == 0) {
                
-                printf("Fim de jogo! Você perdeu todas as vidas.\n");
-                voltarMenu();
+                TelaDeMorte();
             } else {
                 printf("Você tocou nos espinhos, mas ainda tem vida restante.\n");
             }
@@ -716,18 +791,18 @@ void mapa2start(){
                 
                 if (mapa2[newPlayer.PlayerY][newPlayer.PlayerX] == '#') {
                 newPlayer.hp--;
+                newPlayer.PlayerX++;
                 printf("Perdeu vida %d vezes.\n", newPlayer.hp);
                 system("pause");
                 
                 if (newPlayer.hp == 0) {
                 
-                printf("Fim de jogo! Você perdeu todas as vidas.\n");
-                voltarMenu();
+                TelaDeMorte();
             } else {
                 printf("Você tocou nos espinhos, mas ainda tem vida restante.\n");
             }
         }
-            system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+            system("cls"); 
             GenerateMap2(mapa2, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY,monsteX,monsteY,newPlayer.BotaoX,newPlayer.BotaoY);
             PrintMap2(mapa2);
             verificarColisaoComMonstros(monsteX, monsteY, -1, -1);
@@ -770,10 +845,9 @@ void mapa2start(){
 
 
 
-
+// função start mapa 1
 
 void mapa1start() {
-    // Inicialização da posição do jogador e outros elementos do mapa
     newPlayer.hp = 3;
     
     newPlayer.PlayerX = 7;
@@ -783,53 +857,52 @@ void mapa1start() {
     newPlayer.ChaveY = 5;
 
     newPlayer.PortaX = 4;
-    newPlayer.PortaY = 4;
+    newPlayer.PortaY = 6;
 
     GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
 
     char command;
     PrintMap1(mapa);
-    
+     // Mov Jogador
     while (1) {
         command = getch();
 
         switch (command) {
         case 'W':
         case 'w':
-            // Condição para mover para cima
+      
             if (mapa[newPlayer.PlayerY - 1][newPlayer.PlayerX] != '*' && mapa[newPlayer.PlayerY - 1][newPlayer.PlayerX] != 'D') {
-                newPlayer.PlayerY--; // Atualização da posição do jogador
-                system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                newPlayer.PlayerY--; 
+                system("cls"); 
                 GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
                 PrintMap1(mapa);
             }
             break;
         case 'S':
         case 's':
-            // Condição para mover para baixo
+            
             if (mapa[newPlayer.PlayerY + 1][newPlayer.PlayerX] != '*' && mapa[newPlayer.PlayerY + 1][newPlayer.PlayerX] != 'D') {
-                newPlayer.PlayerY++; // Atualização da posição do jogador
-                system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                newPlayer.PlayerY++; 
+                system("cls");
                 GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
                 PrintMap1(mapa);
             }
             break;
         case 'D':
         case 'd':
-            // Condição para mover para direita
+         
             if (mapa[newPlayer.PlayerY][newPlayer.PlayerX + 1] != '*' && mapa[newPlayer.PlayerY][newPlayer.PlayerX + 1] != 'D') {
-                newPlayer.PlayerX++; // Atualização da posição do jogador
-                system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                newPlayer.PlayerX++;
+                system("cls"); 
                 GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
                 PrintMap1(mapa);
             }
             break;
         case 'A':
         case 'a':
-            // Condição para mover para esquerda
             if (mapa[newPlayer.PlayerY][newPlayer.PlayerX - 1] != '*' && mapa[newPlayer.PlayerY][newPlayer.PlayerX - 1] != 'D') {
-                newPlayer.PlayerX--; // Atualização da posição do jogador
-                system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                newPlayer.PlayerX--; 
+                system("cls"); 
                 GenerateMap1(mapa, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY);
                 PrintMap1(mapa);
             }
@@ -846,15 +919,6 @@ void mapa1start() {
             mapa2start();
         break;
         }
-        
-        if (mapa[newPlayer.PlayerY][newPlayer.PlayerX] == '#') {
-            newPlayer.hp--;
-            printf("Perdeu vida %d vezes.\n", newPlayer.hp);
-            if (newPlayer.hp == 0) {
-                printf("Fim de jogo!\n");
-                voltarMenu();
-            }
-        }
         if (mapa[newPlayer.PortaY][newPlayer.PortaX] == '=' && newPlayer.PlayerX == newPlayer.PortaX && newPlayer.PlayerY == newPlayer.PortaY) {
             printf("Parabens! Voce abriu a porta e concluiu a fase!\n");
             chavePega = false;
@@ -865,7 +929,7 @@ void mapa1start() {
         }
     }
 }
-
+// função start mapa vila
 void mapavstart() {
     
     newPlayer.hp = 3;
@@ -886,47 +950,44 @@ void mapavstart() {
 
     char command;
     PrintMapv(mapav);
-    
+    // Mov Jogador
     while (1) {
         command = getch();
 
         switch (command) {
         case 'W':
         case 'w':
-            // Condição para mover para cima
             if (mapav[newPlayer.PlayerY - 1][newPlayer.PlayerX] != '*' && mapav[newPlayer.PlayerY - 1][newPlayer.PlayerX] != 'D') {
-                newPlayer.PlayerY--; // Atualização da posição do jogador
-                system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                newPlayer.PlayerY--; 
+                system("cls"); 
                 GenerateMapv(mapav, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, newPlayer.NpcX, newPlayer.NpcY);
                 PrintMapv(mapav);
             }
             break;
         case 'S':
         case 's':
-            // Condição para mover para baixo
             if (mapav[newPlayer.PlayerY + 1][newPlayer.PlayerX] != '*' && mapav[newPlayer.PlayerY + 1][newPlayer.PlayerX] != 'D') {
-                newPlayer.PlayerY++; // Atualização da posição do jogador
-                system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                newPlayer.PlayerY++; 
+                system("cls"); 
                 GenerateMapv(mapav, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, newPlayer.NpcX, newPlayer.NpcY);
                 PrintMapv(mapav);
             }
             break;
         case 'D':
         case 'd':
-            // Condição para mover para direita
             if (mapav[newPlayer.PlayerY][newPlayer.PlayerX + 1] != '*' && mapav[newPlayer.PlayerY][newPlayer.PlayerX + 1] != 'D') {
-                newPlayer.PlayerX++; // Atualização da posição do jogador
-                system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                newPlayer.PlayerX++; 
+                system("cls"); 
                 GenerateMapv(mapav, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, newPlayer.NpcX, newPlayer.NpcY);
                 PrintMapv(mapav);
             }
             break;
         case 'A':
         case 'a':
-            // Condição para mover para esquerda
+           
             if (mapav[newPlayer.PlayerY][newPlayer.PlayerX - 1] != '*' && mapav[newPlayer.PlayerY][newPlayer.PlayerX - 1] != 'D') {
-                newPlayer.PlayerX--; // Atualização da posição do jogador
-                system("cls"); // Limpar a tela antes de atualizar e imprimir o mapa
+                newPlayer.PlayerX--; 
+                system("cls"); 
                 GenerateMapv(mapav, newPlayer.PlayerX, newPlayer.PlayerY, newPlayer.ChaveX, newPlayer.ChaveY, newPlayer.PortaX, newPlayer.PortaY, newPlayer.NpcX, newPlayer.NpcY);
                 PrintMapv(mapav);
             }
@@ -937,19 +998,11 @@ void mapavstart() {
             break;
             case 'P':
             case 'p':
-                printf("Cheat ativado: Pulando para a próxima fase!\n");
+                printf("Cheat ativado: Pulando para a proxima fase!\n");
                 system("pause");
                 system("cls");
                 mapa1start();
         break;
-        }
-        if (mapa[newPlayer.PlayerY][newPlayer.PlayerX] == '#') {
-            newPlayer.hp--;
-            printf("Perdeu vida %d vezes.\n", newPlayer.hp);
-            if (newPlayer.hp == 0) {
-                printf("Fim de jogo!\n");
-                voltarMenu();
-            }
         }
         if (mapav[newPlayer.PortaY][newPlayer.PortaX] == '=' && newPlayer.PlayerX == newPlayer.PortaX && newPlayer.PlayerY == newPlayer.PortaY) {
             printf("Parabens! Voce abriu a porta e concluiu a fase!\n");
@@ -976,7 +1029,7 @@ int main() {
     printf("\n\n");                                                                                 
                                                         
     do {
-        printf("\t1 - Jogar\n\t2 - Tutorial\n\t3 - Sair\n");
+        printf("\t1 - Jogar\n\t2 - Creditos\n\t3 - Sair\n");
         scanf("%d", &option);
         system("cls");
 
@@ -1005,7 +1058,7 @@ int main() {
             sair();
             break;
         default:
-            printf("Opção invalida.");
+            printf("Opçao invalida.");
             system("cls");
             printf("\n\n"); 
             printf("\n*  #####  #                    #####   ##        #           #     #            #             ####                                       #    *");
