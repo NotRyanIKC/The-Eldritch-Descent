@@ -31,7 +31,7 @@ O jogador precisa:
 | `D`     | Porta fechada                           |
 | `=`     | Porta aberta                            |
 | `O`     | Botão interativo                        |
-| `#`     | Espinho (reinicia a fase)               |
+| `#`     | Espinho                                 |
 | `>`     | Teletransporte                          |
 | `X`     | Monstro nível 1 (movimento aleatório)   |
 | `V`     | Monstro nível 2 (segue o jogador)       |
@@ -70,4 +70,3 @@ O jogador precisa:
 
 - Ryan Cavalcanti  
 - Pedro Augusto  
-- Icaro Santos
