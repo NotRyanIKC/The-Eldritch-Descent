@@ -615,7 +615,7 @@ void mapa3start(){
                 printf("*  ##      #######   ## ##   #######   ##  ##   ##      ## ####       ## *\n");
                 printf("*  ##      ##   ##   ## ##   ##   ##   ##  ##   ##   #  ##  ###  ##   ## *\n");
                 printf("* ####     ##   ##  #### ##  ##   ##  ######   #######  ##   ##   ##### *\n\n");
-                printf("Depois de uma ardua jornada(ou nao), Voce conseguiu escapar do calabouco!\n ");
+                printf("Depois de uma ardua jornada(ou nao), Voce conseguiu recuperar o antigo tesouro do rei!\n");
                 system("pause");
                 system("cls");
                 PrintCreditos();
@@ -814,7 +814,7 @@ void mapa2start(){
             break;
         case 'P':
         case 'p':
-            printf("Cheat ativado: Pulando para a próxima fase!\n");
+            printf("Cheat ativado: Pulando para a proxima fase!\n");
             system("pause");
             system("cls");
             mapa3start();
@@ -913,7 +913,7 @@ void mapa1start() {
             break;
         case 'P':
         case 'p':
-            printf("Cheat ativado: Pulando para a próxima fase!\n");
+            printf("Cheat ativado: Pulando para a proxima fase!\n");
             system("pause");
             system("cls");
             mapa2start();
