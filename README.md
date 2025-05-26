@@ -4,6 +4,20 @@
 
 Este é um jogo de **aventura/puzzle** em linguagem C, onde o jogador deve explorar mapas, interagir com objetos e evitar perigos para concluir **três fases** desafiadoras. Inspirado nos clássicos dos jogos de aventura, o jogo é jogado via terminal e utiliza símbolos ASCII para representar o cenário e os personagens.
 
+## 🗝️ História do jogo: Eldritch Trials
+
+    Em uma vila isolada, cercada por florestas sombrias e lendas esquecidas, existe uma caverna misteriosa chamada "A Boca do Rei". 
+    Dizem que lá dentro está escondido o Tesouro Perdido de Eldrich, 
+    o antigo rei que enlouqueceu e desapareceu nas profundezas há séculos.
+
+    Segundo a tradição, todo mês um morador da vila é escolhido aleatoriamente para entrar na caverna e tentar recuperar o tesouro. Nenhum voltou.
+
+    Agora... é a sua vez.
+
+    Você é apenas um aldeão comum — sem armas, sem treinamento, sem chance. A única coisa que leva com você é a esperança de escapar.
+
+    Dentro da caverna, tudo é traiçoeiro: espinhos, monstros, armadilhas. Vozes sussurram pelas paredes, testando sua sanidade.
+
 ## 🎯 Objetivo
 
 O jogador precisa:
@@ -69,4 +83,5 @@ O jogador precisa:
 ## 👥 Equipe de Desenvolvimento
 
 - Ryan Cavalcanti  
-- Pedro Augusto  
+- Pedro Augusto
+- Luan Ramiro
