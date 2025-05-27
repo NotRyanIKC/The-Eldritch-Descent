@@ -4,7 +4,7 @@
 
 Este é um jogo de **aventura/puzzle** em linguagem C, onde o jogador deve explorar mapas, interagir com objetos e evitar perigos para concluir **três fases** desafiadoras. Inspirado nos clássicos dos jogos de aventura, o jogo é jogado via terminal e utiliza símbolos ASCII para representar o cenário e os personagens.
 
-## 🗝️ História do jogo: Eldritch Trials
+## 🗝️ História do jogo: Eldritch Descent
 
     Em uma vila isolada, cercada por florestas sombrias e lendas esquecidas, existe uma caverna misteriosa chamada "A Boca do Rei". 
     Dizem que lá dentro está escondido o Tesouro Perdido de Eldrich, 
